@@ -1,0 +1,44 @@
+body{
+	width: 100%;
+	height: 100%;
+	background: gray;
+}
+
+
+#hidden_vid, #vid, #gl_canvas, #overlay{
+	-o-transform : scaleX(-1);
+	-webkit-transform : scaleX(-1);
+	transform : scaleX(-1);
+	-ms-filter : fliph; /*IE*/
+	filter : fliph; /*IE*/
+	display: inline-block;
+}
+
+.mirrored{
+	-o-transform : scaleX(-1);
+	-webkit-transform : scaleX(-1);
+	transform : scaleX(-1);
+	-ms-filter : fliph; /*IE*/
+	filter : fliph; /*IE*/
+}
+
+
+#vid, #overlay{
+	border: green solid 1px;
+	position: absolute;
+	top: 50px;
+	left: 0px;
+}
+
+#videoContainer{
+	display: block;
+	border: purple solid 1px;
+}
+
+#overlay, #gl_canvas{
+	display: block;
+}
+
+.offscreen{
+	margin-left: -9999px;
+}

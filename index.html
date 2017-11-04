@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Tracking</title>
+    <link href="src/css/main.css" rel="stylesheet">
+    <script src="src/js/clown-mask.js"></script>
+    <script src="src/js/easeljs.js"></script>
+	<script src="src/js/clmtrackr.min.js"></script>
+	<script src="src/js/utils.js"></script>
+	<script src="src/js/model_pca_20_svm.js"></script>
+    <script src="src/js/svmfilter_webgl.js"></script>
+    <script src="src/js/face_deformer.js"></script>
+    <script src="src/js/facetracking.js"></script>
+</head>
+
+<body>
+    <div style="clear: both;"></div>
+    <canvas id="composition" />
+    <div class="offscreen">
+        <img id="eyemask" src="img/clown_paint.png" />
+        <video id="vid" reload="auto" loop></video>
+        <video id="small_vid" reload="auto" loop></video>
+        <canvas id="face_deformer_canvas" />
+        <canvas id="facetracking_canvas" />
+    </div>
+    <script src="src/js/index.js"></script>
+</body>
+</html>
