@@ -6,14 +6,42 @@ class FaceTracker {
     this.vid = document.getElementById('vid');
     this.small_vid = document.getElementById('small_vid');
     this.webcam = this.small_vid;
-    this.getImage();
-    //this.startTrackingWebcam();
+    //this.getImage();
+    this.setupFileLoader();
+    this.startTrackingWebcam();
   }
 
-  getImage(){
+  setupFileLoader(){
+    document.getElementById('files')
+      .addEventListener('change', this.handleFileSelect.bind(this), false);
+  }
+
+  handleFileSelect(evt){
+    const files = evt.target.files;
+    const fileList = [];
+    const reader = new FileReader();
+    reader.onload = this.getImage.bind(this);
+    for (var i = 0;i < files.length;i++) {
+      if (!files[i].type.match('image.*')) {
+        continue;
+      }
+      fileList.push(files[i]);
+    }
+    if (files.length > 0) {
+      reader.readAsDataURL(fileList[0]);
+    } else {
+      console.log('not a recognized filetype');
+    }
+  }
+
+  error(msg){
+    console.log(msg);
+  }
+
+  getImage(e){
     this.image = new Image();
     this.image.onload = this.imageLoadHandler.bind(this);
-    this.image.src = document.getElementById('image').src;
+    this.image.src = e.target.result;
   }
 
   imageLoadHandler(){
@@ -229,8 +257,11 @@ class FaceTracker {
     let score = this.facetracking.getScore();
     this.context.globalAlpha = 1;
     if(camera){
-      //this.context.drawImage(camera, 0, 0, this.width, this.height);
-      this.context.drawImage(this.image, 0, 0, this.width, this.height);
+      if(this.image){
+        this.context.drawImage(this.image, 0, 0, this.width, this.height);
+      } else {
+        this.context.drawImage(camera, 0, 0, this.width, this.height);
+      }
       this.context.globalCompositeOperation = "multiply";
       this.context.drawImage(this.glcanvas, 0, 0);
     } else {

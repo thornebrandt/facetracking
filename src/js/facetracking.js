@@ -111,6 +111,7 @@ class FaceTracking {
 		const image_src = document.createElement('canvas');
 		image_src.width = image.width;
 		image_src.height = image.height;
+		image_src.style.display = 'none';
 		const context = image_src.getContext('2d');
 		context.drawImage(image, 0, 0, image.width, image.height);
 		return image_src;

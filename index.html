@@ -16,18 +16,19 @@
 
 <body>
     <div style="clear: both;"></div>
-
+    <input type="file" class="btn" id="files" name="files[]" />
     <canvas id="composition"></canvas>
     <div class="offscreen">
-        <img src="img/generic_face.jpg" id="image" />
+        <canvas id="image_src"></canvas>
         <img id="eyemask" src="img/leopard/leopard_paint.png" />
         <video id="vid" reload="auto" loop></video>
         <video id="small_vid" reload="auto" loop></video>
-        <canvas id="face_deformer_canvas" />
-        <canvas id="facetracking_canvas" />
-        <canvas id="image_src" />
-        <input type="file" class="btn" id="files" name="files[]" />
+        <canvas id="face_deformer_canvas"></canvas>
+        <canvas id="facetracking_canvas"></canvas>
     </div>
+    <p id="error">
+        finding face.
+    </p>
     <script src="src/js/index.js"></script>
 </body>
 </html>
