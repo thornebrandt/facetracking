@@ -1,49 +1,12 @@
+console.log(pModel);
 
 class FaceTracker {
   constructor(props) {
-    this.width = 720;
-    this.height = 520;
+    this.width = 1440;
+    this.height = 1080;
     this.vid = document.getElementById('vid');
     this.small_vid = document.getElementById('small_vid');
     this.webcam = this.small_vid;
-    this.getImage();
-    //this.startTrackingWebcam();
-  }
-
-  getImage(){
-    this.image = new Image();
-    this.image.onload = this.imageLoadHandler.bind(this);
-    this.image.src = document.getElementById('image').src;
-  }
-
-  imageLoadHandler(){
-    console.log('image load handler');
-    this.image_src = document.getElementById('image_src');
-    this.resizeCanvas(this.image_src);
-    this.image_src_context = image_src.getContext('2d');
-    this.image_src_context.drawImage(this.image, 0, 0, this.width, this.height);
-    this.src = this.image_src_context;
-    this.startTrackingImage();
-  }
-
-  getFacePoints(){
-    this.leftEye = 27;
-    this.rightEye = 32;
-    this.nose = 62;
-    this.mouth = 57;
-  }
-
-  resizeCanvas(_canvas){
-    _canvas.width = this.width;
-    _canvas.height = this.height;
-  }
-
-  flipCanvas(_canvas){
-    _canvas.className = 'mirrored';
-  }
-
-  startTrackingWebcam() {
-    this.tracking = true;
     this.vid.addEventListener('canplay', this.startTracking.bind(this), false);
     this.getWebCamStream(this.webcam)
       .then((stream) => {
@@ -62,22 +25,24 @@ class FaceTracker {
         });
   }
 
-  startTrackingImage(){
-    this.canvas = document.getElementById('facetracking_canvas');
-    this.composition = document.getElementById('composition');
-    this.context = this.composition.getContext('2d');
-    this.facetracking = new FaceTracking(this.image);
-    this.createMask();
-    this.resizeCanvas(this.canvas);
-    this.resizeCanvas(this.composition);
-    this.flipCanvas(this.composition);
-    this.getFacePoints();
-    this.facetracking.startTracking();
-    this.tracking = true;
-    this.trackFace();
+  getFacePoints(){
+    this.leftEye = 27;
+    this.rightEye = 32;
+    this.nose = 62;
+    this.mouth = 57;
+  }
+
+  resizeCanvas(_canvas){
+    _canvas.width = this.width;
+    _canvas.height = this.height;
+  }
+
+  flipCanvas(_canvas){
+    _canvas.className = 'mirrored';
   }
 
   startTracking(e) {
+    console.log('starting to track', e);
     this.canvas = document.getElementById('facetracking_canvas');
     this.composition = document.getElementById('composition');
     this.context = this.composition.getContext('2d');
@@ -88,6 +53,7 @@ class FaceTracker {
     this.flipCanvas(this.composition);
     this.getFacePoints();
     this.facetracking.startTracking();
+    this.tracking = true;
     this.trackFace();
   }
 
@@ -105,20 +71,20 @@ class FaceTracker {
     this.stage = new createjs.Stage(this.canvas);
     this.mask = {};
     this.maskComponents = [];
-    this.mask.hair_left = new createjs.Bitmap('img/leopard/leopard_ear_left.png');
+    this.mask.hair_left = new createjs.Bitmap('img/clown/clown_hair_left_real.png');
     this.mask.hair_left.scaleX = -1;
-    this.mask.hair_left.regX = 100;
-    this.mask.hair_left.regY = 100;
+    this.mask.hair_left.regX = 580;
+    this.mask.hair_left.regY = 990;
     this.stage.addChild(this.mask.hair_left);
-    this.mask.hair_right = new createjs.Bitmap('img/leopard/leopard_ear_right.png');
+    this.mask.hair_right = new createjs.Bitmap('img/clown/clown_hair_right_real.png');
     this.mask.hair_right.scaleX = -1;
-    this.mask.hair_right.regX = 100;
-    this.mask.hair_right.regY = 100;
+    this.mask.hair_right.regX = 600;
+    this.mask.hair_right.regY = 920;
     this.stage.addChild(this.mask.hair_right);
     this.mask.nose = new createjs.Bitmap('img/clown/nose_real.png');
     this.mask.nose.regX = 120;
     this.mask.nose.regY = 140;
-    //this.stage.addChild(this.mask.nose);
+    this.stage.addChild(this.mask.nose);
   }
 
   drawMask(positions) {
@@ -166,14 +132,14 @@ class FaceTracker {
       this.mask.nose.y = noseY;
       this.mask.nose.scaleX = this.mask.nose.scaleY = d * 4.5;
 
-      this.mask.hair_left.x = hair_leftX - (100 * d);
-      this.mask.hair_left.y = hair_leftY - (600 * d);
-      this.mask.hair_left.scaleX = this.mask.hair_left.scaleY = d * 5;
+      this.mask.hair_left.x = hair_leftX;
+      this.mask.hair_left.y = hair_leftY;
+      this.mask.hair_left.scaleX = this.mask.hair_left.scaleY = d * 4.5;
       this.mask.hair_left.rotation = maskAngle;
 
-      this.mask.hair_right.x = hair_rightX + (100 * d);
-      this.mask.hair_right.y = hair_rightY - (600 * d);
-      this.mask.hair_right.scaleX = this.mask.hair_right.scaleY = d * 5;
+      this.mask.hair_right.x = hair_rightX;
+      this.mask.hair_right.y = hair_rightY;
+      this.mask.hair_right.scaleX = this.mask.hair_right.scaleY = d * 4.5;
       this.mask.hair_right.rotation = maskAngle;
 
       this.fd.draw(relativePositions);
@@ -229,12 +195,11 @@ class FaceTracker {
     let score = this.facetracking.getScore();
     this.context.globalAlpha = 1;
     if(camera){
-      //this.context.drawImage(camera, 0, 0, this.width, this.height);
-      this.context.drawImage(this.image, 0, 0, this.width, this.height);
+      this.context.drawImage(camera, 0, 0, this.width, this.height);
+      this.context.globalCompositeOperation = "soft-light";
+      this.context.drawImage(this.glcanvas, 0, 0);
       this.context.globalCompositeOperation = "multiply";
       this.context.drawImage(this.glcanvas, 0, 0);
-    } else {
-      console.log('hmm');
     }
     this.context.globalCompositeOperation = "source-over";
     this.context.drawImage(this.canvas, 0, 0);

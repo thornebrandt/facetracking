@@ -2,18 +2,13 @@ let _switch = false;
 
 class FaceTracking {
 	constructor(src){
+		this.global_functions();
+		//this.init(src);
+		this.src = src;
 		this.hiddenWidth = 400;
 		this.hiddenHeight = 300;
 		this.confidenceThreshold = .4;
-		if(src.src){
-			this.imageMode = true;
-			this.initializeImage(src);
-			//image
-		} else {
-			this.global_functions();
-			this.src = src;
-			this.initializeVideo(src);
-		}
+		this.initialize(src);
 	}
 
 	global_functions(){
@@ -60,16 +55,7 @@ class FaceTracking {
 		return v.canPlayType('video/ogg; codecs="theora, vorbis"');
 	}
 
-	initializeImage(image){
-		this.image_src_canvas = this.createImageSrc(image);
-		document.body.appendChild(this.image_src_canvas);
-		this.ctrack = new clm.tracker({
-			stopOnConvergence: true });
-		this.ctrack.init(pModel);
-		this.startTracking();
-	}
-
-	initializeVideo(){
+	initialize(){
 		this.ctrack = new clm.tracker({useWebGL : true});
 		this.ctrack.init(pModel);
 		this.hidden_cam = this.createHiddenWebcam();
@@ -107,15 +93,6 @@ class FaceTracking {
 		});
 	}
 
-	createImageSrc(image){
-		const image_src = document.createElement('canvas');
-		image_src.width = image.width;
-		image_src.height = image.height;
-		const context = image_src.getContext('2d');
-		context.drawImage(image, 0, 0, image.width, image.height);
-		return image_src;
-	}
-
 	createHiddenWebcam(){
 		let hidden_cam = document.createElement('video');
 		hidden_cam.width = this.hiddenWidth;
@@ -127,14 +104,12 @@ class FaceTracking {
 	}
 
 	startTracking(){
-		if(this.image_src_canvas) {
-			console.log(this.image_src_canvas, this.image_src_canvas.width);
-			this.ctrack.start(this.image_src_canvas);
-		} else if(this.hidden_cam){
+		if(this.hidden_cam){
 			this.ctrack.start(this.hidden_cam);
 		} else {
 			console.log("cant find vid");
 		}
+		//drawLoop();
 	}
 
 	getScore(){
@@ -142,12 +117,6 @@ class FaceTracking {
 	}
 
 	getPositions(){
-		let src_canvas;
-		if(this.image_src_canvas) {
-			src_canvas = this.image_src_canvas;
-		} else {
-			src_canvas = this.hidden_cam;
-		}
 		let pos = this.ctrack.getCurrentPosition();
 		let convergence = this.ctrack.getConvergence();
 		let score = this.ctrack.getScore();
@@ -155,20 +124,21 @@ class FaceTracking {
 		if(score > this.confidenceThreshold){
 			for(let i = 0; i < pos.length; i++){
 				floatPos.push([
-					pos[i][0]/src_canvas.width,
-					pos[i][1]/src_canvas.height
+					pos[i][0]/this.hidden_cam.width,
+					pos[i][1]/this.hidden_cam.height
 				]);
 			}
 		}
 		return floatPos;
 	}
 
-	// drawLoop(){
-	// 	if(this.tracking){
-	// 		requestAnimFrame(drawLoop);
-	// 		return this.ctrack.getCurrentPosition();
-	// 	} else {
-	// 		return false;
-	// 	}
-	// }
+
+	drawLoop(){
+		if(this.tracking){
+			requestAnimFrame(drawLoop);
+			return this.ctrack.getCurrentPosition();
+		} else {
+			return false;
+		}
+	}
 }

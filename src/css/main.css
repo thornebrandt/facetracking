@@ -23,12 +23,6 @@ body{
 }
 
 
-#vid, #overlay{
-	border: green solid 1px;
-	position: absolute;
-	top: 50px;
-	left: 0px;
-}
 
 #videoContainer{
 	display: block;
@@ -41,4 +35,9 @@ body{
 
 .offscreen{
 	margin-left: -9999px;
+	height: 0px;
+}
+
+.offscreen img{
+	display: block;
 }
