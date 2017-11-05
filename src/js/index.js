@@ -1,8 +1,9 @@
+var originalWidth = 720;
+var originalHeight = 520;
+
 
 class FaceTracker {
   constructor(props) {
-    this.width = 720;
-    this.height = 520;
     this.vid = document.getElementById('vid');
     this.small_vid = document.getElementById('small_vid');
     this.webcam = this.small_vid;
@@ -45,11 +46,13 @@ class FaceTracker {
   }
 
   imageLoadHandler(){
-    console.log('image load handler');
     this.image_src = document.getElementById('image_src');
-    this.resizeCanvas(this.image_src);
+    // this.resizeCanvas(this.image_src);
+    // this.resizeCanvas(this.canvas);
+    // this.resizeCanvas(this.composition);
+    this.styleCanvasSize(this.composition, this.image.width, this.image.height);
     this.image_src_context = image_src.getContext('2d');
-    this.image_src_context.drawImage(this.image, 0, 0, this.width, this.height);
+    this.image_src_context.drawImage(this.image, 0, 0);
     this.src = this.image_src_context;
     this.startTrackingImage();
   }
@@ -59,6 +62,18 @@ class FaceTracker {
     this.rightEye = 32;
     this.nose = 62;
     this.mouth = 57;
+  }
+
+  scaleImage(){
+    if(this.image.width > this.image.height){
+      this.image_src.width = this.image.width;
+    } else if(this.image.width < this.image.height){
+    }
+  }
+
+  styleCanvasSize(_canvas, width, height){
+    _canvas.style.width = width + "px";
+    _canvas.style.height = height + "px";
   }
 
   resizeCanvas(_canvas){
@@ -72,6 +87,8 @@ class FaceTracker {
 
   startTrackingWebcam() {
     this.tracking = true;
+    this.width = originalWidth;
+    this.height = originalHeight;
     this.vid.addEventListener('canplay', this.startTracking.bind(this), false);
     this.getWebCamStream(this.webcam)
       .then((stream) => {
@@ -96,8 +113,6 @@ class FaceTracker {
     this.context = this.composition.getContext('2d');
     this.facetracking = new FaceTracking(this.image);
     this.createMask();
-    this.resizeCanvas(this.canvas);
-    this.resizeCanvas(this.composition);
     this.flipCanvas(this.composition);
     this.getFacePoints();
     this.facetracking.startTracking();
@@ -247,8 +262,10 @@ class FaceTracker {
 
 
   drawEmptyComposition(){
-    const camera = this.webcam;
-    this.context.drawImage(camera, 0, 0, this.width, this.height);
+    if(!this.image){
+      this.context.drawImage(this.webcam, 0, 0, this.width, this.height);
+
+    }
   }
 
   drawComposition(relativePositions){
@@ -264,8 +281,6 @@ class FaceTracker {
       }
       this.context.globalCompositeOperation = "multiply";
       this.context.drawImage(this.glcanvas, 0, 0);
-    } else {
-      console.log('hmm');
     }
     this.context.globalCompositeOperation = "source-over";
     this.context.drawImage(this.canvas, 0, 0);

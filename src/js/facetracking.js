@@ -129,7 +129,6 @@ class FaceTracking {
 
 	startTracking(){
 		if(this.image_src_canvas) {
-			console.log(this.image_src_canvas, this.image_src_canvas.width);
 			this.ctrack.start(this.image_src_canvas);
 		} else if(this.hidden_cam){
 			this.ctrack.start(this.hidden_cam);
