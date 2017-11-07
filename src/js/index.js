@@ -5,10 +5,29 @@ var originalHeight = 520;
 class FaceTracker {
   constructor(props) {
     this.vid = document.getElementById('vid');
+    this.image_src = document.getElementById('image_src');
     this.small_vid = document.getElementById('small_vid');
+    this.canvas = document.getElementById('facetracking_canvas');
+    this.composition = document.getElementById('composition');
+    this.context = this.composition.getContext('2d');
+    this.webcam_btn = document.getElementById('useWebcamBtn');
     this.webcam = this.small_vid;
+    this.width = originalWidth;
+    this.height = originalHeight;
     //this.getImage();
     this.setupFileLoader();
+    this.events();
+    
+  }
+
+  events(){
+    this.webcam_btn.addEventListener('click', this.webcamBtnClickHandler.bind(this));
+  }
+
+  webcamBtnClickHandler(e){
+    e.preventDefault();
+    this.image = null;
+    this.styleCanvasSize(this.composition, this.width, this.height);
     this.startTrackingWebcam();
   }
 
@@ -46,14 +65,7 @@ class FaceTracker {
   }
 
   imageLoadHandler(){
-    this.image_src = document.getElementById('image_src');
-    // this.resizeCanvas(this.image_src);
-    // this.resizeCanvas(this.canvas);
-    // this.resizeCanvas(this.composition);
     this.styleCanvasSize(this.composition, this.image.width, this.image.height);
-    this.image_src_context = image_src.getContext('2d');
-    this.image_src_context.drawImage(this.image, 0, 0);
-    this.src = this.image_src_context;
     this.startTrackingImage();
   }
 
@@ -87,8 +99,6 @@ class FaceTracker {
 
   startTrackingWebcam() {
     this.tracking = true;
-    this.width = originalWidth;
-    this.height = originalHeight;
     this.vid.addEventListener('canplay', this.startTracking.bind(this), false);
     this.getWebCamStream(this.webcam)
       .then((stream) => {
@@ -108,11 +118,10 @@ class FaceTracker {
   }
 
   startTrackingImage(){
-    this.canvas = document.getElementById('facetracking_canvas');
-    this.composition = document.getElementById('composition');
-    this.context = this.composition.getContext('2d');
     this.facetracking = new FaceTracking(this.image);
     this.createMask();
+    this.resizeCanvas(this.canvas);
+    this.resizeCanvas(this.composition);
     this.flipCanvas(this.composition);
     this.getFacePoints();
     this.facetracking.startTracking();
@@ -121,9 +130,6 @@ class FaceTracker {
   }
 
   startTracking(e) {
-    this.canvas = document.getElementById('facetracking_canvas');
-    this.composition = document.getElementById('composition');
-    this.context = this.composition.getContext('2d');
     this.facetracking = new FaceTracking(this.src);
     this.createMask();
     this.resizeCanvas(this.canvas);

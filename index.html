@@ -19,13 +19,14 @@
     <input type="file" class="btn" id="files" name="files[]" />
     <canvas id="composition"></canvas>
     <div class="offscreen">
-        <canvas id="image_src"></canvas>
         <img id="eyemask" src="img/leopard/leopard_paint.png" />
         <video id="vid" reload="auto" loop></video>
         <video id="small_vid" reload="auto" loop></video>
         <canvas id="face_deformer_canvas"></canvas>
         <canvas id="facetracking_canvas"></canvas>
+        <canvas id="image_src"></canvas>
     </div>
+    <a href="#" id='useWebcamBtn'>use webcam</a>
     <p id="error">
         finding face.
     </p>
